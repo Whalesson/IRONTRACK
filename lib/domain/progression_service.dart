@@ -50,7 +50,7 @@ class ProgressionService {
       return NextWorkoutAction(
         action: WorkoutActionType.increaseWeight,
         suggestedWeight: newWeight,
-        message: 'Parabéns! Você atingiu ${lastReps} reps. Aumentando carga para ${formatWeight(newWeight, exercise.unit)}.',
+        message: 'Parabéns! Você atingiu $lastReps reps. Aumentando carga para ${formatWeight(newWeight, exercise.unit)}.',
       );
     }
 

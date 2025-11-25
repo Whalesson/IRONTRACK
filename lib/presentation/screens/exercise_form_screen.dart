@@ -5,6 +5,9 @@ import '../../data/exercise_repository.dart';
 import '../../models/exercise.dart';
 import '../widgets/pixel_button.dart';
 
+// Provider para ExerciseRepository
+final exerciseRepositoryProvider = Provider((ref) => ExerciseRepository());
+
 class ExerciseFormScreen extends ConsumerStatefulWidget {
   final Exercise? exercise;
 
@@ -63,7 +66,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
         xp: widget.exercise?.xp ?? 0,
       );
 
-      final repository = ref.read(ExerciseRepository());
+      final repository = ref.read(exerciseRepositoryProvider);
       
       if (widget.exercise == null) {
         await repository.insert(exercise);
@@ -208,6 +211,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                     groupValue: _progressionType,
                     activeColor: AppColors.neonPrimary,
                     onChanged: (value) => setState(() => _progressionType = value!),
+                    toggleable: false,
                   ),
                 ),
                 Expanded(
@@ -217,6 +221,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                     groupValue: _progressionType,
                     activeColor: AppColors.neonPrimary,
                     onChanged: (value) => setState(() => _progressionType = value!),
+                    toggleable: false,
                   ),
                 ),
               ],
@@ -256,6 +261,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                     groupValue: _unit,
                     activeColor: AppColors.neonPrimary,
                     onChanged: (value) => setState(() => _unit = value!),
+                    toggleable: false,
                   ),
                 ),
                 Expanded(
@@ -265,6 +271,7 @@ class _ExerciseFormScreenState extends ConsumerState<ExerciseFormScreen> {
                     groupValue: _unit,
                     activeColor: AppColors.neonPrimary,
                     onChanged: (value) => setState(() => _unit = value!),
+                    toggleable: false,
                   ),
                 ),
               ],

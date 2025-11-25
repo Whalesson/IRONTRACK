@@ -289,7 +289,9 @@ class BossCard extends ConsumerWidget {
             TextButton(
               onPressed: () async {
                 await _saveSet(context, ref, weight, reps, isWarmup, isTopSet);
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: const Text('CONFIRMAR', style: TextStyle(color: AppColors.neonPrimary)),
             ),
