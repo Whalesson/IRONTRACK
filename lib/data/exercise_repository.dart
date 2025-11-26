@@ -94,4 +94,14 @@ class ExerciseRepository {
       whereArgs: [id],
     );
   }
+
+  // Buscar todos os exercícios (incluindo inativos)
+  Future<List<Exercise>> getAll() async {
+    final db = await _dbHelper.database;
+    final maps = await db.query(
+      'exercises',
+      orderBy: 'name ASC',
+    );
+    return maps.map((map) => Exercise.fromMap(map)).toList();
+  }
 }

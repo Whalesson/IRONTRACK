@@ -5,6 +5,10 @@ import '../data/exercise_repository.dart';
 import '../data/workout_repository.dart';
 import '../data/workout_set_repository.dart';
 import '../data/workout_template_repository.dart';
+import '../models/exercise.dart';
+import '../models/workout.dart';
+import '../models/workout_set.dart';
+import '../models/workout_template.dart';
 
 class BackupService {
   final ExerciseRepository exerciseRepository;
@@ -90,7 +94,7 @@ class BackupService {
         for (final exerciseMap in exercises) {
           try {
             await exerciseRepository.insert(
-              exerciseRepository.fromMap(exerciseMap as Map<String, dynamic>),
+              Exercise.fromMap(exerciseMap as Map<String, dynamic>),
             );
             importedExercises++;
           } catch (e) {
@@ -106,7 +110,7 @@ class BackupService {
         for (final workoutMap in workouts) {
           try {
             await workoutRepository.insert(
-              workoutRepository.fromMap(workoutMap as Map<String, dynamic>),
+              Workout.fromMap(workoutMap as Map<String, dynamic>),
             );
             importedWorkouts++;
           } catch (e) {
@@ -121,7 +125,7 @@ class BackupService {
         for (final setMap in sets) {
           try {
             await workoutSetRepository.insert(
-              workoutSetRepository.fromMap(setMap as Map<String, dynamic>),
+              WorkoutSet.fromMap(setMap as Map<String, dynamic>),
             );
             importedSets++;
           } catch (e) {
@@ -136,7 +140,7 @@ class BackupService {
         for (final templateMap in templates) {
           try {
             await templateRepository.insert(
-              templateRepository.fromMap(templateMap as Map<String, dynamic>),
+              WorkoutTemplate.fromMap(templateMap as Map<String, dynamic>),
             );
             importedTemplates++;
           } catch (e) {

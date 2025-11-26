@@ -3,7 +3,7 @@ import '../models/workout_template.dart';
 import 'database_helper.dart';
 
 class WorkoutTemplateRepository {
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final DatabaseHelper _dbHelper = DatabaseHelper.instance;
 
   // Criar tabela
   Future<void> createTable(Database db) async {

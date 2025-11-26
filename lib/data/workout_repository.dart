@@ -77,4 +77,15 @@ class WorkoutRepository {
       whereArgs: [id],
     );
   }
+
+  // Alias para getAllWorkouts (para compatibilidade)
+  Future<List<Workout>> getAll() async {
+    return await getAllWorkouts();
+  }
+
+  // Inserir treino
+  Future<int> insert(Workout workout) async {
+    final db = await _dbHelper.database;
+    return await db.insert('workouts', workout.toMap());
+  }
 }

@@ -99,4 +99,14 @@ class WorkoutSetRepository {
     }
     return null;
   }
+
+  // Buscar todas as séries
+  Future<List<WorkoutSet>> getAll() async {
+    final db = await _dbHelper.database;
+    final maps = await db.query(
+      'workout_sets',
+      orderBy: 'created_at DESC',
+    );
+    return maps.map((map) => WorkoutSet.fromMap(map)).toList();
+  }
 }
