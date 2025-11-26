@@ -49,9 +49,11 @@ dependencies:
 
   # File Picker
   file_picker: ^8.1.4
+  shared_preferences: ^2.3.3
 
   # Utilities
   intl: ^0.20.1
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -103,5 +105,5 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies,
+   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

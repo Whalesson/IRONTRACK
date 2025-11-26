@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/app_colors.dart';
 import 'presentation/screens/home_screen.dart';
+import 'presentation/screens/onboarding_screen.dart';
 
 void main() {
   runApp(
@@ -11,11 +12,44 @@ void main() {
   );
 }
 
-class IronTrackApp extends StatelessWidget {
+class IronTrackApp extends StatefulWidget {
   const IronTrackApp({super.key});
 
   @override
+  State<IronTrackApp> createState() => _IronTrackAppState();
+}
+
+class _IronTrackAppState extends State<IronTrackApp> {
+  bool _showOnboarding = true;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboarding();
+  }
+
+  Future<void> _checkOnboarding() async {
+    final shouldShow = await OnboardingScreen.shouldShow();
+    setState(() {
+      _showOnboarding = shouldShow;
+      _loading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: AppColors.background,
+          body: Center(
+            child: CircularProgressIndicator(color: AppColors.neonPrimary),
+          ),
+        ),
+      );
+    }
     return MaterialApp(
       title: 'IRONTRACK',
       debugShowCheckedModeBanner: false,
@@ -46,7 +80,7 @@ class IronTrackApp extends StatelessWidget {
           bodySmall: TextStyle(color: AppColors.textSecondary),
         ),
       ),
-      home: const HomeScreen(),
+      home: _showOnboarding ? const OnboardingScreen() : const HomeScreen(),
     );
   }
 }

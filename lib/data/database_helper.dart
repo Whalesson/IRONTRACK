@@ -27,7 +27,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onUpgrade: _upgradeDB,
     );
@@ -92,6 +92,21 @@ class DatabaseHelper {
       )
     ''');
 
+    // Tabela de conquistas
+    await db.execute('''
+      CREATE TABLE achievements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL,
+        icon TEXT NOT NULL,
+        required_value INTEGER NOT NULL,
+        is_unlocked INTEGER NOT NULL DEFAULT 0,
+        unlocked_at TEXT
+      )
+    ''');
+
     // Criar índices para otimização
     await db.execute(
         'CREATE INDEX idx_workout_sets_exercise ON workout_sets(exercise_id)');
@@ -114,6 +129,22 @@ class DatabaseHelper {
           exercise_ids TEXT NOT NULL,
           is_pre_defined INTEGER NOT NULL DEFAULT 0,
           created_at TEXT NOT NULL
+        )
+      ''');
+    }
+    if (oldVersion < 3) {
+      // Adicionar tabela de conquistas
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS achievements (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          code TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
+          description TEXT NOT NULL,
+          category TEXT NOT NULL,
+          icon TEXT NOT NULL,
+          required_value INTEGER NOT NULL,
+          is_unlocked INTEGER NOT NULL DEFAULT 0,
+          unlocked_at TEXT
         )
       ''');
     }

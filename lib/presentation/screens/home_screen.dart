@@ -11,6 +11,8 @@ import 'exercise_list_screen.dart';
 import 'workout_today_screen.dart';
 import 'history_screen.dart';
 import 'settings_screen.dart';
+import 'templates_screen.dart';
+import 'achievements_screen.dart';
 
 // Provider para DashboardService
 final dashboardServiceProvider = Provider((ref) {
@@ -149,7 +151,7 @@ class HomeTab extends ConsumerWidget {
             ),
             const SizedBox(height: 48),
             
-            // Botão Principal
+            // Botões Principais
             PixelButton(
               text: 'START WORKOUT',
               icon: Icons.play_arrow,
@@ -159,6 +161,40 @@ class HomeTab extends ConsumerWidget {
                   MaterialPageRoute(builder: (context) => const WorkoutTodayScreen()),
                 );
               },
+            ),
+            
+            const SizedBox(height: 16),
+            
+            Row(
+              children: [
+                Expanded(
+                  child: PixelButton(
+                    text: 'QUICK START',
+                    icon: Icons.flash_on,
+                    isPrimary: false,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const TemplatesScreen()),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: PixelButton(
+                    text: 'CONQUISTAS',
+                    icon: Icons.emoji_events,
+                    isPrimary: false,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const AchievementsScreen()),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             
             const SizedBox(height: 48),
