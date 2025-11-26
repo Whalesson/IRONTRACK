@@ -47,6 +47,9 @@ dependencies:
   # Charts
   fl_chart: ^0.70.2
 
+  # File Picker
+  file_picker: ^8.1.4
+
   # Utilities
   intl: ^0.20.1
 
@@ -102,3 +105,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  file_picker: ^8.1.4

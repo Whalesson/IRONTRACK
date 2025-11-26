@@ -1,8 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/app_colors.dart';
+import '../../domain/dashboard_service.dart';
+import '../../data/exercise_repository.dart';
+import '../../data/workout_repository.dart';
+import '../../data/workout_set_repository.dart';
+import '../../models/dashboard_stats.dart';
 import '../widgets/pixel_button.dart';
 import 'exercise_list_screen.dart';
 import 'workout_today_screen.dart';
+import 'history_screen.dart';
+import 'settings_screen.dart';
+
+// Provider para DashboardService
+final dashboardServiceProvider = Provider((ref) {
+  return DashboardService(
+    exerciseRepository: ExerciseRepository(),
+    workoutRepository: WorkoutRepository(),
+    workoutSetRepository: WorkoutSetRepository(),
+  );
+});
+
+// Provider para estatísticas do dashboard
+final dashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
+  final service = ref.watch(dashboardServiceProvider);
+  return await service.calculateStats();
+});
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const HomeTab(),
     const ExerciseListScreen(),
-    const Center(child: Text('HISTÓRICO', style: TextStyle(color: AppColors.neonPrimary, fontSize: 24))),
-    const Center(child: Text('CONFIGURAÇÕES', style: TextStyle(color: AppColors.neonPrimary, fontSize: 24))),
+    const HistoryScreen(),
+    const SettingsScreen(),
   ];
 
   @override
@@ -62,11 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statsAsync = ref.watch(dashboardStatsProvider);
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -138,14 +163,32 @@ class HomeTab extends StatelessWidget {
             
             const SizedBox(height: 48),
             
-            // Stats Panel
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatCard('NÍVEL', '1', AppColors.levelPurple),
-                _buildStatCard('PRs', '0', AppColors.prGold),
-                _buildStatCard('STREAK', '0', AppColors.neonSecondary),
-              ],
+            // Stats Panel com dados reais
+            statsAsync.when(
+              data: (stats) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildStatCard('NÍVEL', stats.totalLevel.toString(), AppColors.levelPurple),
+                  _buildStatCard('PRs', stats.totalPRs.toString(), AppColors.prGold),
+                  _buildStatCard('STREAK', stats.currentStreak.toString(), AppColors.neonSecondary),
+                ],
+              ),
+              loading: () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildStatCard('NÍVEL', '...', AppColors.levelPurple),
+                  _buildStatCard('PRs', '...', AppColors.prGold),
+                  _buildStatCard('STREAK', '...', AppColors.neonSecondary),
+                ],
+              ),
+              error: (_, __) => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildStatCard('NÍVEL', '0', AppColors.levelPurple),
+                  _buildStatCard('PRs', '0', AppColors.prGold),
+                  _buildStatCard('STREAK', '0', AppColors.neonSecondary),
+                ],
+              ),
             ),
           ],
         ),

@@ -27,8 +27,9 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
+      onUpgrade: _upgradeDB,
     );
   }
 
@@ -78,6 +79,19 @@ class DatabaseHelper {
       )
     ''');
 
+    // Tabela de templates de treino
+    await db.execute('''
+      CREATE TABLE workout_templates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        type TEXT NOT NULL,
+        exercise_ids TEXT NOT NULL,
+        is_pre_defined INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL
+      )
+    ''');
+
     // Criar índices para otimização
     await db.execute(
         'CREATE INDEX idx_workout_sets_exercise ON workout_sets(exercise_id)');
@@ -86,6 +100,23 @@ class DatabaseHelper {
     await db.execute(
         'CREATE INDEX idx_workout_sets_created_at ON workout_sets(created_at)');
     await db.execute('CREATE INDEX idx_workouts_date ON workouts(date)');
+  }
+
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Adicionar tabela de templates
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS workout_templates (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT NOT NULL,
+          type TEXT NOT NULL,
+          exercise_ids TEXT NOT NULL,
+          is_pre_defined INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL
+        )
+      ''');
+    }
   }
 
   Future<void> close() async {
