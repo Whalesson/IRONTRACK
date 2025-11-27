@@ -10,6 +10,13 @@ import '../../models/exercise.dart';
 import '../../models/workout.dart';
 import '../../models/workout_set.dart';
 import '../widgets/pixel_button.dart';
+import '../widgets/level_up_animation.dart';
+import '../widgets/pr_celebration_animation.dart';
+import '../../data/achievement_repository.dart';
+import '../../domain/achievement_service.dart';
+import '../../domain/dashboard_service.dart';
+import '../widgets/achievement_notification.dart';
+import '../widgets/rest_timer.dart';
 
 // Providers
 final exerciseRepositoryProvider = Provider((ref) => ExerciseRepository());
@@ -350,24 +357,67 @@ class BossCard extends ConsumerWidget {
 
       // Verificar level up
       final newLevel = gamificationService.calculateLevel(newTotalXp);
-      if (newLevel > exercise.level) {
+      final didLevelUp = newLevel > exercise.level;
+      if (didLevelUp) {
         await exerciseRepository.updateLevel(exercise.id!, newLevel);
       }
 
+      // Verificar conquistas desbloqueadas
+      final achievementService = AchievementService(
+        achievementRepository: AchievementRepository(),
+        dashboardService: DashboardService(
+          exerciseRepository: exerciseRepository,
+          workoutRepository: ref.read(workoutRepositoryProvider),
+          workoutSetRepository: setRepository,
+        ),
+      );
+      final newAchievements = await achievementService.checkAndUnlockAchievements();
+
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isPr ? '🔥 NOVO PR! +$xp XP' : 'Série registrada! +$xp XP',
+        // Mostrar animação de PR
+        if (isPr) {
+          PRCelebrationAnimation.show(context, exercise.name, weight, reps);
+        }
+
+        // Mostrar animação de Level Up
+        if (didLevelUp) {
+          await Future.delayed(isPr ? const Duration(milliseconds: 2500) : Duration.zero);
+          if (context.mounted) {
+            LevelUpAnimation.show(context, newLevel);
+          }
+        }
+
+        // Mostrar notificações de conquistas
+        for (final achievement in newAchievements) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          if (context.mounted) {
+            AchievementNotification.show(context, achievement);
+          }
+        }
+
+        // Snackbar simples se não houver PR ou Level Up
+        if (!isPr && !didLevelUp) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Série registrada! +$xp XP'),
+              backgroundColor: AppColors.neonPrimary,
             ),
-            backgroundColor: isPr ? AppColors.prGold : AppColors.neonPrimary,
-          ),
-        );
+          );
+        }
       }
 
       // Refresh da tela
       ref.invalidate(todayWorkoutProvider);
       ref.invalidate(exercisesProvider);
+
+      // Iniciar temporizador de descanso (apenas para top sets)
+      if (isTopSet && context.mounted) {
+        // Aguardar animações terminarem
+        await Future.delayed(const Duration(milliseconds: 3000));
+        if (context.mounted) {
+          RestTimer.show(context, durationSeconds: 90);
+        }
+      }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

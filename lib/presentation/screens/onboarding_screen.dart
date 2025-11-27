@@ -10,6 +10,11 @@ class OnboardingScreen extends StatefulWidget {
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
+
+  static Future<bool> shouldShow() async {
+    final prefs = await SharedPreferences.getInstance();
+    return !(prefs.getBool('onboarding_completed') ?? false);
+  }
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
@@ -289,11 +294,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ],
       ),
     );
-  }
-
-  static Future<bool> shouldShow() async {
-    final prefs = await SharedPreferences.getInstance();
-    return !(prefs.getBool('onboarding_completed') ?? false);
   }
 }
 

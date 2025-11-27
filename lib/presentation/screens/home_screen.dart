@@ -7,6 +7,7 @@ import '../../data/workout_repository.dart';
 import '../../data/workout_set_repository.dart';
 import '../../models/dashboard_stats.dart';
 import '../widgets/pixel_button.dart';
+import '../../core/app_typography.dart';
 import 'exercise_list_screen.dart';
 import 'workout_today_screen.dart';
 import 'history_screen.dart';
@@ -113,40 +114,35 @@ class HomeTab extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
+            Text(
               'IRONTRACK',
-              style: TextStyle(
+              style: AppTypography.pixelTitle(
                 color: AppColors.neonPrimary,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 4,
+                fontSize: 28,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'GAMIFIED PIXEL HARDCORE',
-              style: TextStyle(
+              style: AppTypography.pixelCaption(
                 color: AppColors.neonSecondary,
-                fontSize: 12,
-                letterSpacing: 2,
+                fontSize: 10,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'FOCUSED ON LOAD PROGRESSION',
-              style: TextStyle(
+              style: AppTypography.pixelCaption(
                 color: AppColors.textSecondary,
-                fontSize: 10,
-                letterSpacing: 1,
+                fontSize: 8,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'INSPIRED BY HEAVY DUTY',
-              style: TextStyle(
+              style: AppTypography.pixelCaption(
                 color: AppColors.neonAccent,
-                fontSize: 10,
-                letterSpacing: 1,
+                fontSize: 8,
               ),
             ),
             const SizedBox(height: 48),
@@ -243,18 +239,17 @@ class HomeTab extends ConsumerWidget {
         children: [
           Text(
             value,
-            style: TextStyle(
+            style: AppTypography.statValue(
               color: color,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(
+            style: AppTypography.statLabel(
               color: AppColors.textSecondary,
-              fontSize: 10,
+              fontSize: 8,
             ),
           ),
         ],
